@@ -8,7 +8,8 @@
 
 open Lacaml.D
 
-module GP = Gpr.Fitc_gp.Make_deriv (Gpr.Cov_lin_one.Deriv)
+module Cov = Gpr.Cov_lin_one
+module GP = Gpr.Fitc_gp.Make_deriv (Cov.Deriv)
 
 let diabetes_csv = "data/diabetes.csv"
 
@@ -23,7 +24,7 @@ let () =
   let inputs_array_vec = Array.of_list (List.map make_fvec inputs_row_list) in
   let inputs = Mat.of_col_vecs inputs_array_vec in
   let targets = Vec.of_list (List.map float_of_string (List.flatten targets_list)) in
-  let params = { Gpr.Cov_lin_one.Params.log_theta = 0.5 } in
-  let kernel = Gpr.Cov_lin_one.Eval.Kernel.create params in
+  let params = { Cov.Params.log_theta = 0.5 } in
+  let kernel = Cov.Eval.Kernel.create params in
   let trained = GP.Variational_FIC.Deriv.Optim.Gsl.train ~kernel ~inputs ~targets () in
   ()
